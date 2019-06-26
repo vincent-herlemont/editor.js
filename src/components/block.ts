@@ -315,6 +315,11 @@ export default class Block {
   public tunes: BlockTune[];
 
   /**
+   * Custom sorted key
+   */
+  public key: string;
+
+  /**
    * Cached inputs
    * @type {HTMLElement[]}
    */
@@ -344,6 +349,7 @@ export default class Block {
    * @param {Object} toolClass — Tool's class
    * @param {Object} settings - default settings
    * @param {Object} apiMethods - Editor API
+   * @param {String} key - sort key
    */
   constructor(
     toolName: string,
@@ -351,12 +357,14 @@ export default class Block {
     toolClass: BlockToolConstructable,
     settings: ToolConfig,
     apiMethods: API,
+    key: string,
   ) {
     this.name = toolName;
     this.tool = toolInstance;
     this.class = toolClass;
     this.settings = settings;
     this.api = apiMethods;
+    this.key = key;
     this.holder = this.compose();
 
     this.mutationObserver = new MutationObserver(this.didMutated);
@@ -414,6 +422,7 @@ export default class Block {
           tool: this.name,
           data: finishedExtraction,
           time : measuringEnd - measuringStart,
+          key : this.key,
         };
       })
       .catch((error) => {
