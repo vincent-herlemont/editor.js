@@ -12,6 +12,10 @@ import $ from '../dom';
 import _ from '../utils';
 import Blocks from '../blocks';
 import {BlockTool, BlockToolConstructable, BlockToolData, PasteEvent, ToolConfig} from '../../../types';
+import mudder from 'mudder';
+
+const KEY_START = '0';
+const KEY_END = 'z';
 
 /**
  * @typedef {BlockManager} BlockManager
@@ -204,13 +208,14 @@ export default class BlockManager extends Module {
    * @param {String} toolName - tools passed in editor config {@link EditorConfig#tools}
    * @param {Object} data - constructor params
    * @param {Object} settings - block settings
+   * @param {String} key - sort key
    *
    * @return {Block}
    */
-  public composeBlock(toolName: string, data: BlockToolData = {}, settings: ToolConfig = {}): Block {
+  public composeBlock(toolName: string, data: BlockToolData = {}, settings: ToolConfig = {}, key: string = ''): Block {
     const toolInstance = this.Editor.Tools.construct(toolName, data) as BlockTool;
     const toolClass = this.Editor.Tools.available[toolName] as BlockToolConstructable;
-    const block = new Block(toolName, toolInstance, toolClass, settings, this.Editor.API.methods);
+    const block = new Block(toolName, toolInstance, toolClass, settings, this.Editor.API.methods, key);
 
     this.bindEvents(block);
 
@@ -223,6 +228,7 @@ export default class BlockManager extends Module {
    * @param {String} toolName — plugin name, by default method inserts initial block type
    * @param {Object} data — plugin data
    * @param {Object} settings - default settings
+   * @param {String} key - sort key
    *
    * @return {Block}
    */
@@ -230,11 +236,13 @@ export default class BlockManager extends Module {
     toolName: string = this.config.initialBlock,
     data: BlockToolData = {},
     settings: ToolConfig = {},
+    key: string = '',
   ): Block {
+    key = (key.length === 0) ? this.createKey() : key;
     // Increment index before construct,
     // because developers can use API/Blocks/getCurrentInputIndex on the render() method
     const newIndex = ++this.currentBlockIndex;
-    const block = this.composeBlock(toolName, data, settings);
+    const block = this.composeBlock(toolName, data, settings, key);
 
     this._blocks[newIndex] = block;
     return block;
@@ -277,7 +285,7 @@ export default class BlockManager extends Module {
    * @return {Block} inserted Block
    */
   public insertAtIndex(index: number, needToFocus: boolean = false) {
-    const block = this.composeBlock(this.config.initialBlock, {}, {});
+    const block = this.composeBlock(this.config.initialBlock, {}, {}, this.createKey());
 
     this._blocks[index] = block;
 
@@ -285,9 +293,44 @@ export default class BlockManager extends Module {
       this.currentBlockIndex = index;
     } else if (index <= this.currentBlockIndex) {
       this.currentBlockIndex++;
+
+      // Keep key with the right data
+      const currentKey = this.currentBlock.key;
+      const previousKey = this.previousBlock.key;
+      this.previousBlock.key = currentKey;
+      this.currentBlock.key = previousKey;
     }
 
     return block;
+  }
+
+  /**
+   * Create sort key insert
+   *
+   * @return string
+   */
+  public createKey(): string {
+
+    const createKey = (previousKey, nextKey) => {
+      return mudder.base62.mudder(previousKey, nextKey, 1)[0];
+    };
+
+    let out = '';
+    if (!this.previousBlock && !this.nextBlock && out.length === 0) {
+      out = createKey(KEY_START, KEY_END);
+    }
+    if (!this.nextBlock && this.currentBlock) {
+      out = createKey(this.currentBlock.key, KEY_END);
+    }
+    if (this.nextBlock && this.currentBlock) {
+      out = createKey(this.currentBlock.key, this.nextBlock.key);
+    }
+
+    if (out.length <= 0) {
+      throw new Error(`cannot create key : [${out}]`);
+    }
+
+    return out;
   }
 
   /**
