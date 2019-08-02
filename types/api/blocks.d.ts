@@ -77,6 +77,7 @@ export interface Blocks {
    * @param {ToolConfig} config — Tool config
    * @param {number?} index — index where to insert new Block
    * @param {boolean?} needToFocus - flag to focus inserted Block
+   * @return {string} Block key
    */
   insert(
     type?: string,
@@ -84,6 +85,15 @@ export interface Blocks {
     config?: ToolConfig,
     index?: number,
     needToFocus?: boolean,
-  ): void;
+  ): string;
+
+  /**
+   * Call a method of block by key
+   * @param {string} key - Block key
+   * @param {string} method - Method name
+   * @param {any} args - Arguments of method
+   * @return {any} Block method output
+   */
+  callBlockMethodByKey(key:string, method:string, ...args:any): any;
 
 }

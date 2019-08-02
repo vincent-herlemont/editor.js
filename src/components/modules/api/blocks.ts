@@ -26,6 +26,7 @@ export default class BlocksAPI extends Module {
       stretchBlock: (index: number, status: boolean = true) => this.stretchBlock(index, status),
       insertNewBlock: () => this.insertNewBlock(),
       insert: this.insert,
+      callBlockMethodByKey: this.callBlockMethodByKey,
     };
   }
 
@@ -155,14 +156,27 @@ export default class BlocksAPI extends Module {
     config: ToolConfig = {},
     index?: number,
     needToFocus?: boolean,
-  ): void => {
-    this.Editor.BlockManager.insert(
+  ): string => {
+    const block = this.Editor.BlockManager.insert(
       type,
       data,
       config,
       index,
       needToFocus,
     );
+    return block.key;
+  }
+
+  /**
+   * Call a method of block by key
+   * @param {string} key - Block key
+   * @param {string} method - Method name
+   * @param {any} args - Arguments of method
+   * @return {any} Block method output
+   */
+  public callBlockMethodByKey = (key: string, method: string, ...args: any): any => {
+    const block = this.Editor.BlockManager.getBlockByKey(key);
+    return block.tool[method](...args);
   }
 
   /**

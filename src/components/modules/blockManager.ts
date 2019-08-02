@@ -10,12 +10,8 @@ import Block from '../block';
 import Module from '../__module';
 import $ from '../dom';
 import _ from '../utils';
-import Blocks from '../blocks';
+import Blocks, {KEY_END, KEY_START} from '../blocks';
 import {BlockTool, BlockToolConstructable, BlockToolData, PasteEvent, ToolConfig} from '../../../types';
-import mudder from 'mudder';
-
-const KEY_START = '0';
-const KEY_END = 'z';
 
 /**
  * @typedef {BlockManager} BlockManager
@@ -319,19 +315,15 @@ export default class BlockManager extends Module {
    */
   public createKey(): string {
 
-    const createKey = (previousKey, nextKey) => {
-      return mudder.base62.mudder(previousKey, nextKey, 1)[0];
-    };
-
     let out = '';
     if (!this.previousBlock && !this.nextBlock && out.length === 0) {
-      out = createKey(KEY_START, KEY_END);
+      out = Blocks.generateKey(KEY_START, KEY_END);
     }
     if (!this.nextBlock && this.currentBlock) {
-      out = createKey(this.currentBlock.key, KEY_END);
+      out = Blocks.generateKey(this.currentBlock.key, KEY_END);
     }
     if (this.nextBlock && this.currentBlock) {
-      out = createKey(this.currentBlock.key, this.nextBlock.key);
+      out = Blocks.generateKey(this.currentBlock.key, this.nextBlock.key);
     }
 
     if (out.length <= 0) {
@@ -589,6 +581,16 @@ export default class BlockManager extends Module {
     const firstLevelBlock = (childNode as HTMLElement).closest(`.${Block.CSS.wrapper}`);
 
     return this.blocks.find((block) => block.holder === firstLevelBlock);
+  }
+
+  /**
+   * Get Block by key
+   *
+   * @param {String} key - Block key
+   * @returns {Block}
+   */
+  public getBlockByKey(key: string): Block {
+    return this._blocks.getByKey(key);
   }
 
   /**
