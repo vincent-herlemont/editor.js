@@ -1,6 +1,10 @@
 import _ from './utils';
 import $ from './dom';
 import Block from './block';
+import mudder from 'mudder';
+
+export const KEY_START = '0';
+export const KEY_END = 'z';
 
 /**
  * @class Blocks
@@ -12,6 +16,16 @@ import Block from './block';
  *
  */
 export default class Blocks {
+
+  /**
+   * Create key with mudder
+   *
+   * @param previousKey
+   * @param nextKey
+   */
+  public static generateKey(previousKey, nextKey) {
+      return mudder.base62.mudder(previousKey, nextKey, 1)[0];
+  }
 
   /**
    * Get length of Block instances array
@@ -135,6 +149,7 @@ export default class Blocks {
    */
   public insert(index: number, block: Block, replace: boolean = false): void {
     if (!this.length) {
+      block.key = Blocks.generateKey(KEY_START, KEY_END);
       this.push(block);
       return;
     }
@@ -144,6 +159,7 @@ export default class Blocks {
     }
 
     if (replace) {
+      block.key = this.blocks[index].key;
       this.blocks[index].holder.remove();
     }
 
@@ -209,6 +225,18 @@ export default class Blocks {
    */
   public get(index: number): Block {
     return this.blocks[index];
+  }
+
+  /**
+   * Get Block by key
+   *
+   * @param {String} key - Block key
+   * @returns {Block}
+   */
+  public getByKey(key: string): Block {
+    return this.blocks.find((block) => {
+      return block.key === key;
+    });
   }
 
   /**
