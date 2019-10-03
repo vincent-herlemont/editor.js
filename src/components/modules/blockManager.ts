@@ -289,7 +289,7 @@ export default class BlockManager extends Module {
    * @return {Block} inserted Block
    */
   public insertInitialBlockAtIndex(index: number, needToFocus: boolean = false) {
-    const block = this.composeBlock(this.config.initialBlock, {}, {}, this.createKey());
+    const block = this.composeBlock(this.config.initialBlock, {}, {}, this.createKey(true));
 
     this._blocks[index] = block;
 
@@ -297,12 +297,6 @@ export default class BlockManager extends Module {
       this.currentBlockIndex = index;
     } else if (index <= this.currentBlockIndex) {
       this.currentBlockIndex++;
-
-      // Keep key with the right data
-      const currentKey = this.currentBlock.key;
-      const previousKey = this.previousBlock.key;
-      this.previousBlock.key = currentKey;
-      this.currentBlock.key = previousKey;
     }
 
     return block;
@@ -313,24 +307,23 @@ export default class BlockManager extends Module {
    *
    * @return string
    */
-  public createKey(): string {
+  public createKey(initialBlock: boolean = false): string {
 
-    let out = '';
-    if (!this.previousBlock && !this.nextBlock && out.length === 0) {
-      out = Blocks.generateKey(KEY_START, KEY_END);
+    if (initialBlock && this.currentBlock) {
+      return Blocks.generateKey(KEY_START, this.currentBlock.key);
+    }
+
+    if (!this.previousBlock && !this.nextBlock) {
+      return Blocks.generateKey(KEY_START, KEY_END);
     }
     if (!this.nextBlock && this.currentBlock) {
-      out = Blocks.generateKey(this.currentBlock.key, KEY_END);
+      return Blocks.generateKey(this.currentBlock.key, KEY_END);
     }
     if (this.nextBlock && this.currentBlock) {
-      out = Blocks.generateKey(this.currentBlock.key, this.nextBlock.key);
+      return Blocks.generateKey(this.currentBlock.key, this.nextBlock.key);
     }
 
-    if (out.length <= 0) {
-      throw new Error(`cannot create key : [${out}]`);
-    }
-
-    return out;
+    throw new Error(`cannot create key`);
   }
 
   /**
