@@ -27,6 +27,7 @@ export default class BlocksAPI extends Module {
       insertNewBlock: () => this.insertNewBlock(),
       insert: this.insert,
       callBlockMethodByKey: this.callBlockMethodByKey,
+      insertInsertAdjacentByKey: this.insertInsertAdjacentByKey,
     };
   }
 
@@ -164,6 +165,36 @@ export default class BlocksAPI extends Module {
       index,
       needToFocus,
     );
+    return block.key;
+  }
+
+  /**
+   * Insert a block adjacent by key.
+   *
+   * @param {String} toolName — plugin name, by default method inserts initial block type
+   * @param {Object} data — plugin data
+   * @param {Object} settings - default settings
+   * @param {String} key - Block key
+   * @param {boolean} afterBlock - Set true, insert block after the key,
+   *                               otherwise set false, insert block before key
+   * TODO: @param {boolean} needToFocus flag shows if needed to update current Block index
+   * @return {string} Block key
+   */
+  public insertInsertAdjacentByKey = (
+    toolName: string,
+    data: BlockToolData,
+    settings: ToolConfig,
+    key: string,
+    afterBlock: boolean = true,
+  ): string => {
+    const block = this.Editor.BlockManager.insertInsertAdjacentByKey(
+      toolName,
+      data,
+      settings,
+      key,
+      afterBlock,
+    );
+
     return block.key;
   }
 
