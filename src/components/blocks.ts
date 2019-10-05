@@ -240,6 +240,18 @@ export default class Blocks {
   }
 
   /**
+   * Get Index by key
+   *
+   * @param {String} key - Block key
+   * @returns {number}
+   */
+  public getIndexByKey(key: string): number {
+    return this.blocks.findIndex((block) => {
+      return block.key === key;
+    });
+  }
+
+  /**
    * Return index of passed Block
    *
    * @param {Block} block

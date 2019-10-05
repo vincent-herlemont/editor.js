@@ -251,6 +251,60 @@ export default class BlockManager extends Module {
   }
 
   /**
+   * Insert a block adjacent by key.
+   *
+   * @param {String} toolName — plugin name, by default method inserts initial block type
+   * @param {Object} data — plugin data
+   * @param {Object} settings - default settings
+   * @param {String} key - Block key
+   * @param {boolean} afterBlock - Set true, insert block after the key,
+   *                               otherwise set false, insert block before key
+   * TODO: @param {boolean} needToFocus flag shows if needed to update current Block index
+   */
+  public insertInsertAdjacentByKey(
+    toolName: string = this.config.initialBlock,
+    data: BlockToolData,
+    settings: ToolConfig,
+    key: string,
+    afterBlock: boolean = true,
+  ): Block {
+    if (afterBlock) {
+      const afterBlockIndex = this._blocks.getIndexByKey(key);
+      const beforeBlock = this._blocks.get(afterBlockIndex + 1);
+
+      let newKey;
+      if (beforeBlock) {
+        newKey = Blocks.generateKey(key, beforeBlock.key);
+      } else {
+        newKey = Blocks.generateKey(key, KEY_END);
+      }
+
+      const block = this.composeBlock(toolName, data, settings, newKey);
+
+      this._blocks[afterBlockIndex + 1] = block;
+
+      return block;
+
+    } else {
+      const beforeBlockIndex = this._blocks.getIndexByKey(key);
+      const afterBlock = this._blocks.get(beforeBlockIndex - 1);
+
+      let newKey;
+      if (afterBlock) {
+        newKey = Blocks.generateKey(afterBlock.key, key);
+      } else {
+        newKey = Blocks.generateKey(KEY_START, key);
+      }
+
+      const block = this.composeBlock(toolName, data, settings, newKey);
+
+      this._blocks[beforeBlockIndex] = block;
+
+      return block;
+    }
+  }
+
+  /**
    * Insert pasted content. Call onPaste callback after insert.
    *
    * @param {string} toolName

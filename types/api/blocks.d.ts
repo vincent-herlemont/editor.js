@@ -1,5 +1,6 @@
 import {OutputData} from '../data-formats/output-data';
 import {BlockToolData, ToolConfig} from "../tools";
+import block from "../../src/components/block";
 
 /**
  * Describes methods to manipulate with Editor`s blocks
@@ -86,6 +87,26 @@ export interface Blocks {
     index?: number,
     needToFocus?: boolean,
   ): string;
+
+  /**
+   * Insert a block adjacent by key.
+   *
+   * @param {String} toolName — plugin name, by default method inserts initial block type
+   * @param {Object} data — plugin data
+   * @param {Object} settings - default settings
+   * @param {String} key - Block key
+   * @param {boolean} afterBlock - Set true, insert block after the key,
+   *                               otherwise set false, insert block before key
+   * TODO: @param {boolean} needToFocus flag shows if needed to update current Block index
+   * @return {string} Block key
+   */
+  insertInsertAdjacentByKey(
+    toolName: string,
+    data: BlockToolData,
+    settings: ToolConfig,
+    key: string,
+    afterBlock: boolean,
+  ): string
 
   /**
    * Call a method of block by key
