@@ -117,4 +117,10 @@ export interface Blocks {
    */
   callBlockMethodByKey(key:string, method:string, ...args:any): any;
 
+  /**
+   *  Current block listener
+   *
+   * @param callBack call when current block is set
+   */
+  onCurrentBlock(callBack: (Block) => void): void;
 }

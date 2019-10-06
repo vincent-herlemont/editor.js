@@ -28,6 +28,7 @@ export default class BlocksAPI extends Module {
       insert: this.insert,
       callBlockMethodByKey: this.callBlockMethodByKey,
       insertInsertAdjacentByKey: this.insertInsertAdjacentByKey,
+      onCurrentBlock: this.onCurrentBlock,
     };
   }
 
@@ -222,5 +223,14 @@ export default class BlocksAPI extends Module {
     _.log('Method blocks.insertNewBlock() is deprecated and it will be removed in next major release. ' +
       'Use blocks.insert() instead.', 'warn');
     this.insert();
+  }
+
+  /**
+   * Current block listener
+   *
+   * @param callBack call when current block is set
+   */
+  public onCurrentBlock = (callBack: (Block) => void): void => {
+    this.Editor.BlockManager.onCurrentBlock = callBack;
   }
 }

@@ -29,6 +29,11 @@ export default class BlockManager extends Module {
   }
 
   /**
+   * Callback call when set current block
+   */
+  public onCurrentBlock: (Block) => void;
+
+  /**
    * Set current Block index and fire Block lifecycle callbacks
    * @param newIndex
    */
@@ -42,6 +47,10 @@ export default class BlockManager extends Module {
     }
 
     this._currentBlockIndex = newIndex;
+
+    if (this.onCurrentBlock && this._blocks[newIndex]) {
+      this.onCurrentBlock(this._blocks[newIndex]);
+    }
   }
 
   /**
