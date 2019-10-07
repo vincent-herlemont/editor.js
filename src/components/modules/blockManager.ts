@@ -437,6 +437,10 @@ export default class BlockManager extends Module {
     if (index === undefined) {
       index = this.currentBlockIndex;
     }
+    const block = this._blocks.get(index);
+    if (typeof block.tool.noDelete === 'function' && block.tool.noDelete()) {
+      return;
+    }
     this._blocks.remove(index);
 
     if (this.currentBlockIndex >= index) {

@@ -46,6 +46,11 @@ export interface BlockTool extends BaseTool {
    * @param {PasteEvent} event
    */
   onPaste?(event: PasteEvent): void;
+
+  /**
+   * Method that allow to delete block.
+   */
+  noDelete?(): boolean
 }
 
 export interface BlockToolConstructable extends BaseToolConstructable {
