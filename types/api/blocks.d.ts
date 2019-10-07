@@ -123,4 +123,12 @@ export interface Blocks {
    * @param callBack call when current block is set
    */
   onCurrentBlock(callBack: (Block) => void): void;
+
+  /**
+   *  Get block position by key
+   *
+   * @param {string} key - Block key
+   * @return {number} - Block index
+   */
+  getBlockIndexByKey(key: string): number;
 }

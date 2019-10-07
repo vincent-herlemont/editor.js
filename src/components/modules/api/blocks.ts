@@ -29,6 +29,7 @@ export default class BlocksAPI extends Module {
       callBlockMethodByKey: this.callBlockMethodByKey,
       insertInsertAdjacentByKey: this.insertInsertAdjacentByKey,
       onCurrentBlock: this.onCurrentBlock,
+      getBlockIndexByKey: this.getBlockIndexByKey,
     };
   }
 
@@ -209,6 +210,16 @@ export default class BlocksAPI extends Module {
   public callBlockMethodByKey = (key: string, method: string, ...args: any): any => {
     const block = this.Editor.BlockManager.getBlockByKey(key);
     return block.tool[method](...args);
+  }
+
+  /**
+   *  Get block position by key
+   *
+   * @param {string} key - Block key
+   * @return {number} - Block index
+   */
+  public getBlockIndexByKey = (key: string): number => {
+    return this.Editor.BlockManager.getBlockIndexByKey(key);
   }
 
   /**

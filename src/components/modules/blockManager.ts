@@ -654,6 +654,16 @@ export default class BlockManager extends Module {
   }
 
   /**
+   *  Get block position by key
+   *
+   * @param {string} key - Block key
+   * @return {number} - Block index
+   */
+  public getBlockIndexByKey(key: string): number {
+    return this._blocks.getIndexByKey(key);
+  }
+
+  /**
    * Swap Blocks Position
    * @param {Number} fromIndex
    * @param {Number} toIndex
