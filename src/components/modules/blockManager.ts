@@ -21,17 +21,17 @@ import {BlockTool, BlockToolConstructable, BlockToolData, PasteEvent, ToolConfig
 export default class BlockManager extends Module {
 
   /**
+   * Callback call when set current block
+   */
+  public onCurrentBlock: (Block) => void;
+
+  /**
    * Returns current Block index
    * @return {number}
    */
   public get currentBlockIndex(): number {
     return this._currentBlockIndex;
   }
-
-  /**
-   * Callback call when set current block
-   */
-  public onCurrentBlock: (Block) => void;
 
   /**
    * Set current Block index and fire Block lifecycle callbacks
@@ -278,36 +278,36 @@ export default class BlockManager extends Module {
     afterBlock: boolean = true,
   ): Block {
     if (afterBlock) {
-      const afterBlockIndex = this._blocks.getIndexByKey(key);
-      const beforeBlock = this._blocks.get(afterBlockIndex + 1);
+      const blockAfterIndex = this._blocks.getIndexByKey(key);
+      const blockBefore = this._blocks.get(blockAfterIndex + 1);
 
       let newKey;
-      if (beforeBlock) {
-        newKey = Blocks.generateKey(key, beforeBlock.key);
+      if (blockBefore) {
+        newKey = Blocks.generateKey(key, blockBefore.key);
       } else {
         newKey = Blocks.generateKey(key, KEY_END);
       }
 
       const block = this.composeBlock(toolName, data, settings, newKey);
 
-      this._blocks[afterBlockIndex + 1] = block;
+      this._blocks[blockAfterIndex + 1] = block;
 
       return block;
 
     } else {
-      const beforeBlockIndex = this._blocks.getIndexByKey(key);
-      const afterBlock = this._blocks.get(beforeBlockIndex - 1);
+      const blockBeforeIndex = this._blocks.getIndexByKey(key);
+      const blockAfter = this._blocks.get(blockBeforeIndex - 1);
 
       let newKey;
-      if (afterBlock) {
-        newKey = Blocks.generateKey(afterBlock.key, key);
+      if (blockAfter) {
+        newKey = Blocks.generateKey(blockAfter.key, key);
       } else {
         newKey = Blocks.generateKey(KEY_START, key);
       }
 
       const block = this.composeBlock(toolName, data, settings, newKey);
 
-      this._blocks[beforeBlockIndex] = block;
+      this._blocks[blockBeforeIndex] = block;
 
       return block;
     }
