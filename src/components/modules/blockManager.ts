@@ -247,7 +247,8 @@ export default class BlockManager extends Module {
     needToFocus: boolean = true,
     key: string = '',
   ): Block {
-    key = (key.length === 0) ? this.createKey() : key;
+    key = (key.length === 0) ? this.createKey(index) : key;
+
     const block = this.composeBlock(toolName, data, settings, key);
 
     this._blocks[index] = block;
@@ -352,7 +353,7 @@ export default class BlockManager extends Module {
    * @return {Block} inserted Block
    */
   public insertInitialBlockAtIndex(index: number, needToFocus: boolean = false) {
-    const block = this.composeBlock(this.config.initialBlock, {}, {}, this.createKey(true));
+    const block = this.composeBlock(this.config.initialBlock, {}, {}, this.createKey(index));
 
     this._blocks[index] = block;
 
@@ -366,27 +367,25 @@ export default class BlockManager extends Module {
   }
 
   /**
-   * Create sort key insert
+   * Create block key
    *
-   * @return string
+   * @param {number} index - Block index
+   * @return {string} Block key
    */
-  public createKey(initialBlock: boolean = false): string {
-
-    if (initialBlock && this.currentBlock) {
-      return Blocks.generateKey(KEY_START, this.currentBlock.key);
+  public createKey(index: number): string {
+    let key;
+    const blockBefore = this._blocks[index - 1];
+    const blockAfter = this._blocks[index];
+    if (blockAfter && blockBefore) {
+      key = Blocks.generateKey(blockBefore.key, blockAfter.key);
+    } else if (!blockBefore && blockAfter) {
+      key = Blocks.generateKey(KEY_START, blockAfter.key);
+    } else if (blockBefore && !blockAfter) {
+      key = Blocks.generateKey(blockBefore.key, KEY_END);
+    } else {
+      key = Blocks.generateKey(KEY_START, KEY_END);
     }
-
-    if (!this.previousBlock && !this.nextBlock) {
-      return Blocks.generateKey(KEY_START, KEY_END);
-    }
-    if (!this.nextBlock && this.currentBlock) {
-      return Blocks.generateKey(this.currentBlock.key, KEY_END);
-    }
-    if (this.nextBlock && this.currentBlock) {
-      return Blocks.generateKey(this.currentBlock.key, this.nextBlock.key);
-    }
-
-    throw new Error(`cannot create key`);
+    return key;
   }
 
   /**
