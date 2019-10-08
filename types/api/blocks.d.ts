@@ -28,7 +28,7 @@ export interface Blocks {
   /**
    * Removes current Block
    */
-  delete(): void;
+  delete(blockIndex?: number): void;
 
   /**
    * Swaps two Blocks
