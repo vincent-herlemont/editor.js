@@ -18,16 +18,6 @@ export const KEY_END = 'z';
 export default class Blocks {
 
   /**
-   * Create key with mudder
-   *
-   * @param previousKey
-   * @param nextKey
-   */
-  public static generateKey(previousKey, nextKey) {
-      return mudder.base62.mudder(previousKey, nextKey, 1)[0];
-  }
-
-  /**
    * Get length of Block instances array
    *
    * @returns {Number}
@@ -52,6 +42,16 @@ export default class Blocks {
    */
   public get nodes(): HTMLElement[] {
     return _.array(this.workingArea.children);
+  }
+
+  /**
+   * Create key with mudder
+   *
+   * @param previousKey
+   * @param nextKey
+   */
+  public static generateKey(previousKey, nextKey) {
+      return mudder.base62.mudder(previousKey, nextKey, 1)[0];
   }
 
   /**
@@ -167,19 +167,7 @@ export default class Blocks {
 
     this.blocks.splice(index, deleteCount, block);
 
-    if (index > 0) {
-      const previousBlock = this.blocks[index - 1];
-
-      previousBlock.holder.insertAdjacentElement('afterend', block.holder);
-    } else {
-      const nextBlock = this.blocks[index + 1];
-
-      if (nextBlock) {
-        nextBlock.holder.insertAdjacentElement('beforebegin', block.holder);
-      } else {
-        this.workingArea.appendChild(block.holder);
-      }
-    }
+    this.insertHolder(index, block);
   }
 
   /**
@@ -215,6 +203,24 @@ export default class Blocks {
     const index = this.blocks.indexOf(targetBlock);
 
     this.insert(index + 1, newBlock);
+  }
+
+  /**
+   * Replace block by key
+   *
+   * @param {string} key - Target block key
+   * @param {Block} newBlock - New block
+   */
+  public replaceByKey(key: string, newBlock: Block): void {
+    for (let i = 0; i < this.blocks.length; i++) {
+      const block =  this.blocks[i];
+      if (block.key === key) {
+        this.blocks.splice(i, 1, newBlock);
+        block.holder.remove();
+        this.insertHolder(i, newBlock);
+        return;
+      }
+    }
   }
 
   /**
@@ -259,5 +265,21 @@ export default class Blocks {
    */
   public indexOf(block: Block): number {
     return this.blocks.indexOf(block);
+  }
+
+  private insertHolder(index: number, block: Block): void {
+    if (index > 0) {
+      const previousBlock = this.blocks[index - 1];
+
+      previousBlock.holder.insertAdjacentElement('afterend', block.holder);
+    } else {
+      const nextBlock = this.blocks[index + 1];
+
+      if (nextBlock) {
+        nextBlock.holder.insertAdjacentElement('beforebegin', block.holder);
+      } else {
+        this.workingArea.appendChild(block.holder);
+      }
+    }
   }
 }

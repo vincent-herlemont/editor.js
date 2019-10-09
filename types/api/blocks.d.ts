@@ -109,6 +109,21 @@ export interface Blocks {
   ): string
 
   /**
+   * Replace block by key
+   *
+   * @param {string} key - Target block key
+   * @param {String} toolName — plugin name
+   * @param {Object} data — plugin data
+   * @param {Object} settings - default settings
+   */
+  replaceByKey(
+    key: string,
+    toolName: string,
+    data: BlockToolData,
+    settings: ToolConfig
+  ): void
+
+  /**
    * Call a method of block by key
    * @param {string} key - Block key
    * @param {string} method - Method name

@@ -315,6 +315,24 @@ export default class BlockManager extends Module {
   }
 
   /**
+   * Replace block by key
+   *
+   * @param {string} key - Target block key
+   * @param {String} toolName — plugin name
+   * @param {Object} data — plugin data
+   * @param {Object} settings - default settings
+   */
+  public replaceByKey(
+    key: string,
+    toolName: string,
+    data: BlockToolData,
+    settings: ToolConfig,
+  ): void {
+    const block = this.composeBlock(toolName, data, settings, key);
+    this._blocks.replaceByKey(key, block);
+  }
+
+  /**
    * Insert pasted content. Call onPaste callback after insert.
    *
    * @param {string} toolName

@@ -30,6 +30,7 @@ export default class BlocksAPI extends Module {
       insertInsertAdjacentByKey: this.insertInsertAdjacentByKey,
       onCurrentBlock: this.onCurrentBlock,
       getBlockIndexByKey: this.getBlockIndexByKey,
+      replaceByKey: this.replaceByKey,
     };
   }
 
@@ -198,6 +199,23 @@ export default class BlocksAPI extends Module {
     );
 
     return block.key;
+  }
+
+  /**
+   * Replace block by key
+   *
+   * @param {string} key - Target block key
+   * @param {String} toolName — plugin name
+   * @param {Object} data — plugin data
+   * @param {Object} settings - default settings
+   */
+  public replaceByKey = (
+    key: string,
+    toolName: string,
+    data: BlockToolData,
+    settings: ToolConfig,
+  ): void => {
+    this.Editor.BlockManager.replaceByKey(key, toolName, data, settings);
   }
 
   /**
