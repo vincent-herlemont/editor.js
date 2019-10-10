@@ -187,8 +187,8 @@ export default class BlocksAPI extends Module {
     toolName: string,
     data: BlockToolData,
     settings: ToolConfig,
-    key: string,
-    afterBlock: boolean = true,
+    key?: string,
+    afterBlock?: boolean,
   ): string => {
     const block = this.Editor.BlockManager.insertInsertAdjacentByKey(
       toolName,

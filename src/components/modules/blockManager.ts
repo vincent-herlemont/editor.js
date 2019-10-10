@@ -296,11 +296,18 @@ export default class BlockManager extends Module {
       return block;
 
     } else {
-      const blockBeforeIndex = this._blocks.getIndexByKey(key);
-      const blockAfter = this._blocks.get(blockBeforeIndex - 1);
+      let blockBeforeIndex = this._blocks.getIndexByKey(key);
+      let noSelect: boolean = false;
+      if ( blockBeforeIndex < 0) {
+        noSelect = true;
+        blockBeforeIndex = 0;
+      }
+      const blockAfter = this._blocks.get(blockBeforeIndex > 0 ? blockBeforeIndex - 1 : 0);
 
       let newKey;
-      if (blockAfter) {
+      if (noSelect && blockAfter) {
+        newKey = Blocks.generateKey(KEY_START, blockAfter.key);
+      } else if (blockAfter && blockAfter.key !== key) {
         newKey = Blocks.generateKey(blockAfter.key, key);
       } else {
         newKey = Blocks.generateKey(KEY_START, key);

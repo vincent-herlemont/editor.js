@@ -104,8 +104,8 @@ export interface Blocks {
     toolName: string,
     data: BlockToolData,
     settings: ToolConfig,
-    key: string,
-    afterBlock: boolean,
+    key?: string,
+    afterBlock?: boolean,
   ): string
 
   /**
