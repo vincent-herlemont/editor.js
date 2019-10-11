@@ -149,7 +149,6 @@ export default class Blocks {
    */
   public insert(index: number, block: Block, replace: boolean = false): void {
     if (!this.length) {
-      block.key = Blocks.generateKey(KEY_START, KEY_END);
       this.push(block);
       return;
     }

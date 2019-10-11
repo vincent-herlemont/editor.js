@@ -227,7 +227,11 @@ export default class BlocksAPI extends Module {
    */
   public callBlockMethodByKey = (key: string, method: string, ...args: any): any => {
     const block = this.Editor.BlockManager.getBlockByKey(key);
-    return block.tool[method](...args);
+    if (typeof block.tool[method] === 'function') {
+      return block.tool[method](...args);
+    } else {
+      throw new Error(`can not get ${method} of block ${block.name} ${block.key}`);
+    }
   }
 
   /**
