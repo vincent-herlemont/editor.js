@@ -1,6 +1,7 @@
 import {OutputData} from '../data-formats/output-data';
 import {BlockToolData, ToolConfig} from "../tools";
 import block from "../../src/components/block";
+import {BlockInfo} from "../data-formats/block-info";
 
 /**
  * Describes methods to manipulate with Editor`s blocks
@@ -146,4 +147,10 @@ export interface Blocks {
    * @return {number} - Block index
    */
   getBlockIndexByKey(key: string): number;
+
+  /**
+   * Get Block info by index
+   * @param index
+   */
+  getBlockInfoByIndex(index: number): BlockInfo;
 }

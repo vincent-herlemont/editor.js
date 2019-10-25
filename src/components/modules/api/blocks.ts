@@ -3,6 +3,7 @@ import Module from '../../__module';
 import {Blocks} from '../../../../types/api';
 import {BlockToolData, OutputData, ToolConfig} from '../../../../types';
 import _ from './../../utils';
+import BlockInfo from '../../blockInfo';
 
 /**
  * @class BlocksAPI
@@ -31,6 +32,7 @@ export default class BlocksAPI extends Module {
       onCurrentBlock: this.onCurrentBlock,
       getBlockIndexByKey: this.getBlockIndexByKey,
       replaceByKey: this.replaceByKey,
+      getBlockInfoByIndex: this.getBlockInfoByIndex,
     };
   }
 
@@ -59,6 +61,17 @@ export default class BlocksAPI extends Module {
   public getBlockByIndex(index: number): HTMLElement {
     const block = this.Editor.BlockManager.getBlockByIndex(index);
     return block.holder;
+  }
+
+  /**
+   * Return Block info by Block Index
+   * @param {Number} index
+   *
+   * @return {BlockInfo}
+   */
+  public getBlockInfoByIndex = (index: number): BlockInfo => {
+    const block = this.Editor.BlockManager.getBlockByIndex(index);
+    return new BlockInfo(block);
   }
 
   /**
